@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
@@ -110,26 +110,85 @@ def test_getlocation():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-@app.route('/api/queryall', methods=['GET'])
-def api_query_first():
+@app.route('/search', methods=['GET'])
+def search_animal_byfilter():
+    name = request.args.get('name')
+    search = request.args.get('type')
     try:
-        # db.session.execute(text('select * from LocationQuery;'))
-        # return jsonify({'status': 'success'})
-        # users = LocationQuery.query.all()
-        users = animaldata.query.all()
-        animaldata_ID = [u.ID for u in users]
-        Class = [u.Class for u in users]
-        Order = [u.Order for u in users]
-        Animal = [u.Animal for u in users]
-        Level = [u.Level for u in users]
-        SN = [u.SN for u in users]
-        Profile = [u.Profile for u in users]
-        Location = [u.Location for u in users]
-        jsonf = {'status': 'success', 'data': {'ID': animaldata_ID, 'Class': Class, 'Order': Order, 'Animal': Animal,
-                                               'Level': Level, 'SN': SN, 'Profile': Profile, 'Location': Location}}
-        return jsonify(jsonf)
+        # 按照类查询
+        if (search == 'all'):
+            users = animaldata.query.filter_by(Animal=name).all()
+            Class = [u.Class for u in users]
+            Order = [u.Order for u in users]
+            Animal = [u.Animal for u in users]
+            Level = [u.Level for u in users]
+            SN = [u.SN for u in users]
+            Profile = [u.Profile for u in users]
+            jsonf = {'status': 'success',
+                     'data': {'Class': Class, 'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
+                     }
+            return jsonify(jsonf)
+        else:
+            if(search == 'Class'):
+                users = animaldata.query.filter_by(Class={name}).all()
+                Class = [u.Class for u in users]
+                Order = [u.Order for u in users]
+                Animal = [u.Animal for u in users]
+                Level = [u.Level for u in users]
+                SN = [u.SN for u in users]
+                Profile = [u.Profile for u in users]
+                jsonf = {'status': 'success',
+                         'data': {'Class': Class, 'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
+                         }
+                return jsonify(jsonf)
+            else:
+                if(search == 'Order'):
+                    users = animaldata.query.filter_by(Order={name}).all()
+                    Order = [u.Order for u in users]
+                    Animal = [u.Animal for u in users]
+                    Level = [u.Level for u in users]
+                    SN = [u.SN for u in users]
+                    Profile = [u.Profile for u in users]
+                    jsonf = {'status': 'success',
+                             'data': {'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
+                             }
+                    return jsonify(jsonf)
+                else:
+                    if(search == 'Level'):
+                        users = animaldata.query.filter_by(Level={name}).all()
+                        Order = [u.Order for u in users]
+                        Animal = [u.Animal for u in users]
+                        Level = [u.Level for u in users]
+                        SN = [u.SN for u in users]
+                        Profile = [u.Profile for u in users]
+                        jsonf = {'status': 'success',
+                                 'data': {'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
+                                 }
+                        return jsonify(jsonf)
     except Exception as e:
         return jsonify({'status': 'fail', 'error': str(e)})
+
+
+# @app.route('/api/queryall', methods=['GET'])
+# def api_query_first():
+#     try:
+#         # db.session.execute(text('select * from LocationQuery;'))
+#         # return jsonify({'status': 'success'})
+#         # users = LocationQuery.query.all()
+#         users = animaldata.query.all()
+#         ID = [u.ID for u in users]
+#         Class = [u.Class for u in users]
+#         Order = [u.Order for u in users]
+#         Animal = [u.Animal for u in users]
+#         Level = [u.Level for u in users]
+#         SN = [u.SN for u in users]
+#         Profile = [u.Profile for u in users]
+#         Location = [u.Location for u in users]
+#         jsonf = {'status': 'success', 'data': {'ID': ID, 'Class': Class, 'Order': Order, 'Animal': Animal,
+#                                                'Level': Level, 'SN': SN, 'Profile': Profile, 'Location': Location}}
+#         return jsonify(jsonf)
+#     except Exception as e:
+#         return jsonify({'status': 'fail', 'error': str(e)})
 
 
 # 从前端POST过来的动物名称，返回动物信息和动物简介，然后在前端覆盖页面中显示
