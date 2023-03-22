@@ -117,54 +117,79 @@ def search_animal_byfilter():
     try:
         # 按照类查询
         if (search == 'all'):
-            users = animaldata.query.filter_by(Animal=name).all()
+            users = animaldata.query.filter(animaldata.Animal.like('%' + name + '%')).all()
+            # users = animaldata.query.filter_by(Animal={name}).all()
             Class = [u.Class for u in users]
             Order = [u.Order for u in users]
             Animal = [u.Animal for u in users]
             Level = [u.Level for u in users]
             SN = [u.SN for u in users]
             Profile = [u.Profile for u in users]
-            jsonf = {'status': 'success',
-                     'data': {'Class': Class, 'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
-                     }
-            return jsonify(jsonf)
+            if (len(Class) == 0 and len(Order) == 0 and len(Animal) == 0 and len(Level) == 0 and len(SN) == 0 and len(
+                    Profile) == 0):
+                return ''
+            else:
+                jsonf = {'status': 'success',
+                         'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
+                                  'Profile': Profile}
+                         }
+                return jsonify(jsonf)
         else:
-            if(search == 'Class'):
-                users = animaldata.query.filter_by(Class={name}).all()
+            if (search == 'Class'):
+                users = animaldata.query.filter(animaldata.Class.like('%' + name + '%')).all()
+                # users = animaldata.query.filter_by(Class={name}).all()
                 Class = [u.Class for u in users]
                 Order = [u.Order for u in users]
                 Animal = [u.Animal for u in users]
                 Level = [u.Level for u in users]
                 SN = [u.SN for u in users]
                 Profile = [u.Profile for u in users]
-                jsonf = {'status': 'success',
-                         'data': {'Class': Class, 'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
-                         }
-                return jsonify(jsonf)
+                if (len(Class) == 0 and len(Order) == 0 and len(Animal) == 0 and len(Level) == 0 and len(
+                        SN) == 0 and len(Profile) == 0):
+                    return ''
+                else:
+                    jsonf = {'status': 'success',
+                             'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
+                                      'Profile': Profile}
+                             }
+                    return jsonify(jsonf)
             else:
-                if(search == 'Order'):
-                    users = animaldata.query.filter_by(Order={name}).all()
+                if (search == 'Order'):
+                    users = animaldata.query.filter(animaldata.Order.like('%' + name + '%')).all()
+                    # users = animaldata.query.filter_by(Order={name}).all()
+                    Class = [u.Class for u in users]
                     Order = [u.Order for u in users]
                     Animal = [u.Animal for u in users]
                     Level = [u.Level for u in users]
                     SN = [u.SN for u in users]
                     Profile = [u.Profile for u in users]
-                    jsonf = {'status': 'success',
-                             'data': {'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
-                             }
-                    return jsonify(jsonf)
+                    if (len(Class) == 0 and len(Order) == 0 and len(Animal) == 0 and len(Level) == 0 and len(
+                            SN) == 0 and len(Profile) == 0):
+                        return ''
+                    else:
+                        jsonf = {'status': 'success',
+                                 'data': {'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN, 'Profile': Profile}
+                                 }
+                        return jsonify(jsonf)
                 else:
-                    if(search == 'Level'):
-                        users = animaldata.query.filter_by(Level={name}).all()
+                    if (search == 'Level'):
+                        users = animaldata.query.filter(animaldata.Level.like('%' + name + '%')).all()
+                        # users = animaldata.query.filter_by(Level={name}).all()
+                        Class = [u.Class for u in users]
                         Order = [u.Order for u in users]
                         Animal = [u.Animal for u in users]
                         Level = [u.Level for u in users]
                         SN = [u.SN for u in users]
                         Profile = [u.Profile for u in users]
-                        jsonf = {'status': 'success',
-                                 'data': {'Order': Order, 'Animal': Animal, 'Level': Level, 'SN': SN,'Profile': Profile}
-                                 }
-                        return jsonify(jsonf)
+                        if (len(Class) == 0 and len(Order) == 0 and len(Animal) == 0 and len(Level) == 0 and len(
+                                SN) == 0 and len(Profile) == 0):
+                            return ''
+                        else:
+                            jsonf = {'status': 'success',
+                                     'data': {'class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
+                                              'Profile': Profile}
+                                     }
+                            return jsonify(jsonf)
     except Exception as e:
         return jsonify({'status': 'fail', 'error': str(e)})
 
