@@ -3,6 +3,8 @@ import os
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask import send_file, make_response
+
 
 app = Flask(__name__)
 CORS(app)
@@ -131,7 +133,7 @@ def search_animal_byfilter():
             else:
                 jsonf = {'status': 'success',
                          'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
-                                  'Profile': Profile}
+                                  'value': Profile}
                          }
                 return jsonify(jsonf)
         else:
@@ -150,7 +152,7 @@ def search_animal_byfilter():
                 else:
                     jsonf = {'status': 'success',
                              'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
-                                      'Profile': Profile}
+                                      'value': Profile}
                              }
                     return jsonify(jsonf)
             else:
@@ -168,7 +170,7 @@ def search_animal_byfilter():
                         return ''
                     else:
                         jsonf = {'status': 'success',
-                                 'data': {'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN, 'Profile': Profile}
+                                 'data': {'Class': Class,'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN, 'value': Profile}
                                  }
                         return jsonify(jsonf)
                 else:
@@ -186,8 +188,8 @@ def search_animal_byfilter():
                             return ''
                         else:
                             jsonf = {'status': 'success',
-                                     'data': {'class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
-                                              'Profile': Profile}
+                                     'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
+                                              'value': Profile}
                                      }
                             return jsonify(jsonf)
     except Exception as e:
@@ -207,30 +209,31 @@ def search_animal_byfilter():
 #         Animal = [u.Animal for u in users]
 #         Level = [u.Level for u in users]
 #         SN = [u.SN for u in users]
-#         Profile = [u.Profile for u in users]
+#         pdf = [u.pdf for u in users]
 #         Location = [u.Location for u in users]
 #         jsonf = {'status': 'success', 'data': {'ID': ID, 'Class': Class, 'Order': Order, 'Animal': Animal,
-#                                                'Level': Level, 'SN': SN, 'Profile': Profile, 'Location': Location}}
+#                                                'Level': Level, 'SN': SN, 'pdf': pdf, 'Location': Location}}
 #         return jsonify(jsonf)
 #     except Exception as e:
 #         return jsonify({'status': 'fail', 'error': str(e)})
 
 
 # 从前端POST过来的动物名称，返回动物信息和动物简介，然后在前端覆盖页面中显示
-@app.route('/api/profile/<animal>', methods=['POST'])
+@app.route('/pdf/<animal>', methods=['GET'])
 def search_file(animal):
     try:
         users = animaldata.query.filter_by(Animal=animal).all()
-        Animal = [u.Animal for u in users]
         Profile = [u.Profile for u in users]
-        file_path = './Profile/' + Profile[0]
+        File = ''.join(Profile)
+        file_path = './pdf/' + File
         if os.path.exists(file_path):
-            with open(file_path, 'r') as f:
-                file_data = f.read()
-            jsonf = {'status': 'success', 'data': {'Animal': Animal, 'Profile': file_data}}
-            return jsonify(jsonf)
+            headers = ("Content-Disposition", f"inline;filename={file_path}")
+            as_attachment = False
+            response = make_response(send_file(file_path,as_attachment=as_attachment))
+            response.headers[headers[0]] = headers[1]
+            return response
         else:
-            return jsonify({'status': 'fail', 'error': '未收录该动物简介'})
+            return 'fail'
 
     except Exception as e:
         return jsonify({'status': 'fail', 'error': str(e)})
