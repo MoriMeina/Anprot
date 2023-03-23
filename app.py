@@ -222,10 +222,10 @@ def search_animal_byfilter():
 @app.route('/pdf/<animal>', methods=['GET'])
 def search_file(animal):
     try:
-        users = animaldata.query.filter_by(Animal=animal).all()
-        Profile = [u.Profile for u in users]
-        File = ''.join(Profile)
-        file_path = './pdf/' + File
+        # users = animaldata.query.filter_by(Animal=animal).all()
+        # Profile = [u.Profile for u in users]
+        # File = ''.join(Profile)
+        file_path = './pdf/' + animal
         if os.path.exists(file_path):
             headers = ("Content-Disposition", f"inline;filename={file_path}")
             as_attachment = False
