@@ -192,27 +192,30 @@ def search_file(animal):
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-# 根据类搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式：http://localhost:5000/api/byclass?name=${name}
-@app.route('/api/byclass', methods=['GET'])
+# 根据类搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/api/byclass
+@app.route('/api/byclass', methods=['POST'])
 def search_class_from_loc():
-    name = request.args.get('name')
+
+    data = request.get_json()
+    classes = data['class']
     try:
-        users = animaldata.query_by(name).all()
         features = []
-        for data in users:
-            animal = data.Animal
-            location = data.Location
-            feature = {
-                'type': 'Feature',
-                'properties': {
-                    'name': animal
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': location
+        for name in classes:
+            users = animaldata.query.filter_by(Class=name).all()
+            for data in users:
+                animal = data.Animal
+                location = data.Location
+                feature = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': animal
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': location
+                    }
                 }
-            }
-            features.append(feature)
+                features.append(feature)
         jsonf = {
             'type': 'FeatureCollection',
             'features': features
@@ -222,57 +225,29 @@ def search_class_from_loc():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-# 根据目搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式：http://localhost:5000/api/byorder?name=${name}
-@app.route('/api/byorder', methods=['GET'])
-def search_order_from_loc():
-    name = request.args.get('name')
-    try:
-        users = animaldata.query_by(name).all()
-        features = []
-        for data in users:
-            animal = data.Animal
-            location = data.Location
-            feature = {
-                'type': 'Feature',
-                'properties': {
-                    'name': animal
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': location
-                }
-            }
-            features.append(feature)
-        jsonf = {
-            'type': 'FeatureCollection',
-            'features': features
-        }
-        return jsonify(jsonf)
-    except Exception as e:
-        return jsonify({'status': 'fail', 'error': str(e)})
-
-
-# 根据濒危等级搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式：http://localhost:5000/api/bylevel?level=${level}
-@app.route('/api/bylevel', methods=['GET'])
+# 根据濒危等级搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/api/bylevel
+@app.route('/api/bylevel', methods=['POST'])
 def search_level_from_loc():
-    level = request.args.get('level')
+    data = request.get_json()
+    leveles = data['level']
     try:
-        users = animaldata.query_by(level).all()
         features = []
-        for data in users:
-            animal = data.Animal
-            location = data.Location
-            feature = {
-                'type': 'Feature',
-                'properties': {
-                    'name': animal
-                },
-                'geometry': {
-                    'type': 'Point',
-                    'coordinates': location
+        for name in leveles:
+            users = animaldata.query.filter_by(Level=name).all()
+            for data in users:
+                animal = data.Animal
+                location = data.Location
+                feature = {
+                    'type': 'Feature',
+                    'properties': {
+                        'name': animal
+                    },
+                    'geometry': {
+                        'type': 'Point',
+                        'coordinates': location
+                    }
                 }
-            }
-            features.append(feature)
+                features.append(feature)
         jsonf = {
             'type': 'FeatureCollection',
             'features': features
