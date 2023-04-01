@@ -24,7 +24,7 @@ class animaldata(db.Model):
     Class = db.Column(db.String(255), nullable=False)
     Order = db.Column(db.String(255), nullable=False)
     Animal = db.Column(db.String(255), nullable=False)
-    Level = db.Column(db.Integer, nullable=False)
+    Level = db.Column(db.String(255), nullable=False)
     SN = db.Column(db.String(255), nullable=False)
     Profile = db.Column(db.String(255), nullable=False)
     Location = db.Column(db.JSON, nullable=False)
