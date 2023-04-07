@@ -46,6 +46,17 @@ class animaldata(db.Model):
         }
 
 
+class userdata(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    username = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=False)
+    nickname = db.Column(db.String(255), nullable=False)
+    isadmin = db.Column(db.Integer, nullable=False)
+    phone = db.Column(db.String(255), nullable=False)
+    icon = db.Column(db.String(255), nullable=False)
+
+
 # 前端初始化时获取所有动物的经纬度在地图上进行标记
 @app.route('/api/location', methods=['GET'])
 def test_getlocation():
@@ -195,7 +206,6 @@ def search_file(animal):
 # 根据类搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/api/byclass
 @app.route('/api/byclass', methods=['POST'])
 def search_class_from_loc():
-
     data = request.get_json()
     classes = data['class']
     try:
@@ -229,10 +239,10 @@ def search_class_from_loc():
 @app.route('/api/bylevel', methods=['POST'])
 def search_level_from_loc():
     data = request.get_json()
-    leveles = data['level']
+    levels = data['level']
     try:
         features = []
-        for name in leveles:
+        for name in levels:
             users = animaldata.query.filter_by(Level=name).all()
             for data in users:
                 animal = data.Animal
@@ -257,5 +267,45 @@ def search_level_from_loc():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data['username']
+    password = data['password']
+    try:
+        users = userdata.query.filter_by(username=username).all()
+        if len(users) == 0:
+            return jsonify({'status': 'fail', 'error': '用户名不存在'})
+        else:
+            user = users[0]
+            if user.password == password:
+                return jsonify({'status': 'success'})
+            else:
+                return jsonify({'status': 'fail', 'error': '密码错误'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    nickname = data['nickname']
+    email = data['email']
+    username = data['username']
+    password = data['password']
+    phone = data['phone']
+    try:
+        users = userdata.query.filter_by(username=username).all()
+        if len(users) == 0:
+            user = userdata(nickname=nickname, email=email, username=username, password=password, phone=phone)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({'status': 'success'})
+        else:
+            return jsonify({'status': 'fail', 'error': '用户名已存在'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000, debug=True)
