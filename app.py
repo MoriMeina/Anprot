@@ -307,5 +307,18 @@ def register():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+@app.route('/api/upload', methods=['POST'])
+def upload():
+    file = request.files['file']
+    if file:
+        filename = file.filename
+        save_file_path = './save/'
+        # 设置缓存文件夹
+        file.save(os.path.join(save_file_path, filename))
+        return jsonify({'status': 'success'})
+    else:
+        return jsonify({'status': 'fail', 'error': '上传失败'})
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
