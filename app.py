@@ -186,12 +186,29 @@ def search_animal_byfilter():
 
 
 # 从请求pdf名称，返回动物信息和动物简介，然后在前端覆盖页面中显示
+# @app.route('/pdf/<animal>', methods=['GET'])
+# def search_file(animal):
+#     try:
+#         file_path = './pdf/' + animal
+#         if os.path.exists(file_path):
+#             headers = ("Content-Disposition", f"inline;filename={file_path}")
+#             as_attachment = False
+#             response = make_response(send_file(file_path, as_attachment=as_attachment))
+#             response.headers[headers[0]] = headers[1]
+#             return response
+#         else:
+#             return 'fail'
+#
+#     except Exception as e:
+#         return jsonify({'status': 'fail', 'error': str(e)})
 @app.route('/pdf/<animal>', methods=['GET'])
 def search_file(animal):
     try:
         file_path = './pdf/' + animal
         if os.path.exists(file_path):
-            headers = ("Content-Disposition", f"inline;filename={file_path}")
+            filename_bytes = animal.encode('utf-8')
+            filename = filename_bytes.decode('latin-1')
+            headers = ("Content-Disposition", f"inline;filename={filename}")
             as_attachment = False
             response = make_response(send_file(file_path, as_attachment=as_attachment))
             response.headers[headers[0]] = headers[1]
