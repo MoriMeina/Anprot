@@ -1,5 +1,5 @@
 import os
-
+import uuid
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -55,6 +55,7 @@ class userdata(db.Model):
     isadmin = db.Column(db.Integer, nullable=False)
     phone = db.Column(db.String(255), nullable=False)
     icon = db.Column(db.String(255), nullable=False)
+    token = db.Column(db.String(255), nullable=True)
 
 
 # 前端初始化时获取所有动物的经纬度在地图上进行标记
@@ -297,7 +298,10 @@ def login():
         else:
             user = users[0]
             if user.password == password:
-                return jsonify({'status': 'success'})
+                token = uuid.uuid1()
+                user.token = token
+                db.session.commit()
+                return jsonify({'status': 'success', 'token': token})
             else:
                 return jsonify({'status': 'fail', 'error': '密码错误'})
     except Exception as e:
@@ -354,6 +358,29 @@ def changepass():
         else:
             user = users[0]
             if user.password == oldPassword:
+                user.password = newPassword
+                db.session.commit()
+                return jsonify({'status': 'success'})
+            else:
+                return jsonify({'status': 'fail', 'error': '原密码错误'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
+# 忘记密码API
+@app.route('/api/forgotpass', methods=['POST'])
+def forgotpass():
+    data = request.get_json()
+    username = data['username']
+    mail = data['mail']
+    newPassword = data['newPassword']
+    try:
+        users = userdata.query.filter_by(username=username).all()
+        if len(users) == 0:
+            return jsonify({'status': 'fail', 'error': '用户名不存在'})
+        else:
+            user = users[0]
+            if user.email == mail:
                 user.password = newPassword
                 db.session.commit()
                 return jsonify({'status': 'success'})
