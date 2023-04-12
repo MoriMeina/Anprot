@@ -284,6 +284,7 @@ def search_level_from_loc():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 登录API
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -303,6 +304,7 @@ def login():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 注册API
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
@@ -324,6 +326,7 @@ def register():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 临时上传pdf
 @app.route('/api/upload', methods=['POST'])
 def upload():
     file = request.files['file']
@@ -335,6 +338,29 @@ def upload():
         return jsonify({'status': 'success'})
     else:
         return jsonify({'status': 'fail', 'error': '上传失败'})
+
+
+# 修改密码API
+@app.route('/api/changepass', methods=['POST'])
+def changepass():
+    data = request.get_json()
+    username = data['username']
+    oldPassword = data['oldPassword']
+    newPassword = data['newPassword']
+    try:
+        users = userdata.query.filter_by(username=username).all()
+        if len(users) == 0:
+            return jsonify({'status': 'fail', 'error': '用户名不存在'})
+        else:
+            user = users[0]
+            if user.password == oldPassword:
+                user.password = newPassword
+                db.session.commit()
+                return jsonify({'status': 'success'})
+            else:
+                return jsonify({'status': 'fail', 'error': '原密码错误'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
 
 
 if __name__ == '__main__':
