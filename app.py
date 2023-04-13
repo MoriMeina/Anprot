@@ -390,5 +390,44 @@ def forgotpass():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+@app.route('/api/personal', methods=['POST'])
+def personal():
+    data = request.get_json()
+    token = data['token']
+    try:
+        users = userdata.query.filter_by(token=token).all()
+        if len(users) == 0:
+            return jsonify({'status': 'fail', 'error': '用户名不存在'})
+        else:
+            user = users[0]
+            return jsonify(
+                {'status': 'success', 'username': user.username, 'nickname': user.nickname, 'email': user.email,
+                 'phone': user.phone})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
+@app.route('/api/updatepersonal', methods=['POST'])
+def updatepersonal():
+    data = request.get_json()
+    token = data['token']
+    nickname = data['nickname']
+    email = data['email']
+    phone = data['phone']
+    try:
+        users = userdata.query.filter_by(token=token).all()
+        if len(users) == 0:
+            return jsonify({'status': 'fail', 'error': '用户名不存在'})
+        else:
+            user = users[0]
+            user.nickname = nickname
+            user.email = email
+            user.phone = phone
+            db.session.commit()
+            return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
