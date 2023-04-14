@@ -112,7 +112,7 @@ def get_pdfname():
 
 
 # 根据type和动物名搜索数据库，返回给前端
-@app.route('/search', methods=['GET'])
+@app.route('/trans/api/search', methods=['GET'])
 def search_animal_byfilter():
     name = request.args.get('name')
     search = request.args.get('type')
