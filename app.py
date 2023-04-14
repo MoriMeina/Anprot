@@ -70,7 +70,7 @@ class waitcheck(db.Model):
 
 
 # 前端初始化时获取所有动物的经纬度在地图上进行标记
-@app.route('/api/location', methods=['GET'])
+@app.route('/trans/api/location', methods=['GET'])
 def test_getlocation():
     try:
         users = animaldata.query.all()
@@ -99,7 +99,7 @@ def test_getlocation():
 
 
 # 获取动物名对应的pdf文件名，返回给前端
-@app.route('/api/pdfname', methods=['GET'])
+@app.route('/trans/api/pdfname', methods=['GET'])
 def get_pdfname():
     try:
         name = request.args.get('name')
@@ -232,8 +232,8 @@ def search_file(animal):
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-# 根据类搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/api/byclass
-@app.route('/api/byclass', methods=['POST'])
+# 根据类搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/trans/api/byclass
+@app.route('/trans/api/byclass', methods=['POST'])
 def search_class_from_loc():
     data = request.get_json()
     classes = data['class']
@@ -264,8 +264,8 @@ def search_class_from_loc():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-# 根据濒危等级搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/api/bylevel
-@app.route('/api/bylevel', methods=['POST'])
+# 根据濒危等级搜索动物的经纬度，返回给前端geojson，在地图上标记。用于filter按钮，请求格式[POST]：http://localhost:5000/trans/api/bylevel
+@app.route('/trans/api/bylevel', methods=['POST'])
 def search_level_from_loc():
     data = request.get_json()
     levels = data['level']
@@ -297,7 +297,7 @@ def search_level_from_loc():
 
 
 # 登录API
-@app.route('/api/login', methods=['POST'])
+@app.route('/trans/api/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data['username']
@@ -320,7 +320,7 @@ def login():
 
 
 # 注册API
-@app.route('/api/register', methods=['POST'])
+@app.route('/trans/api/register', methods=['POST'])
 def register():
     data = request.get_json()
     nickname = data['nickname']
@@ -342,7 +342,7 @@ def register():
 
 
 # 临时上传pdf
-@app.route('/api/upload', methods=['POST'])
+@app.route('/trans/api/upload', methods=['POST'])
 def upload():
     file = request.files['file']
     if file:
@@ -356,7 +356,7 @@ def upload():
 
 
 # 修改密码API
-@app.route('/api/changepass', methods=['POST'])
+@app.route('/trans/api/changepass', methods=['POST'])
 def changepass():
     data = request.get_json()
     username = data['username']
@@ -379,7 +379,7 @@ def changepass():
 
 
 # 忘记密码API
-@app.route('/api/forgotpass', methods=['POST'])
+@app.route('/trans/api/forgotpass', methods=['POST'])
 def forgotpass():
     data = request.get_json()
     username = data['username']
@@ -401,7 +401,7 @@ def forgotpass():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-@app.route('/api/personal', methods=['POST'])
+@app.route('/trans/api/personal', methods=['POST'])
 def personal():
     data = request.get_json()
     token = data['token']
@@ -418,7 +418,7 @@ def personal():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-@app.route('/api/updatepersonal', methods=['POST'])
+@app.route('/trans/api/updatepersonal', methods=['POST'])
 def updatepersonal():
     data = request.get_json()
     token = data['token']
@@ -442,7 +442,7 @@ def updatepersonal():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
-@app.route('/api/uploadfile', methods=['POST'])
+@app.route('/trans/api/uploadfile', methods=['POST'])
 def uploadfile():
     data = request.get_json()
     Class = data['Class']
