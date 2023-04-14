@@ -58,6 +58,17 @@ class userdata(db.Model):
     token = db.Column(db.String(255), nullable=True)
 
 
+class waitcheck(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    Class = db.Column(db.String(255), nullable=False)
+    Order = db.Column(db.String(255), nullable=False)
+    Animal = db.Column(db.String(255), nullable=False)
+    Level = db.Column(db.String(255), nullable=False)
+    SN = db.Column(db.String(255), nullable=False)
+    Profile = db.Column(db.String(255), nullable=False)
+    Location = db.Column(db.JSON, nullable=False)
+
+
 # 前端初始化时获取所有动物的经纬度在地图上进行标记
 @app.route('/api/location', methods=['GET'])
 def test_getlocation():
@@ -413,6 +424,7 @@ def updatepersonal():
     token = data['token']
     nickname = data['nickname']
     email = data['email']
+    profile = data['profile']
     phone = data['phone']
     try:
         users = userdata.query.filter_by(token=token).all()
@@ -423,8 +435,29 @@ def updatepersonal():
             user.nickname = nickname
             user.email = email
             user.phone = phone
+            user.profile = profile
             db.session.commit()
             return jsonify({'status': 'success'})
+    except Exception as e:
+        return jsonify({'status': 'fail', 'error': str(e)})
+
+
+@app.route('/api/uploadfile', methods=['POST'])
+def uploadfile():
+    data = request.get_json()
+    Class = data['Class']
+    Order = data['Order']
+    Animal = data['Animal']
+    Level = data['level']
+    SN = data['SN']
+    location = data['Lat']
+    profile = data['profile']
+    try:
+        users = waitcheck(Class=Class, Order=Order, Animal=Animal, Level=Level, SN=SN, Location=location,
+                          Profile=profile)
+        db.session.add(users)  # 添加到会话中
+        db.session.commit()  # 提交会话
+        return jsonify({'status': 'success'})
     except Exception as e:
         return jsonify({'status': 'fail', 'error': str(e)})
 
