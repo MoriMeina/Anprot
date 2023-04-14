@@ -213,7 +213,7 @@ def search_animal_byfilter():
 #
 #     except Exception as e:
 #         return jsonify({'status': 'fail', 'error': str(e)})
-@app.route('/pdf/<animal>', methods=['GET'])
+@app.route('/trans/api/pdf/<animal>', methods=['GET'])
 def search_file(animal):
     try:
         file_path = './pdf/' + animal
