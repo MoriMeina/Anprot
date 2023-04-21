@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="96de2627-0032-4fe7-adf7-8e606bfbdc35" name="C">
+        <fileTransfer rootFolder="/www/AnprotBackEnd" accessType="SFTP" sshConfigId="a3c00ab7-76b0-48e4-a3ea-65bf25af7e06" sshConfig="root@10.10.10.68:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
