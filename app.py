@@ -127,13 +127,14 @@ def search_animal_byfilter():
             Level = [u.Level for u in users]
             SN = [u.SN for u in users]
             Profile = [u.Profile for u in users]
+            Location = [u.Location for u in users]
             if (len(Class) == 0 and len(Order) == 0 and len(Animal) == 0 and len(Level) == 0 and len(SN) == 0 and len(
                     Profile) == 0):
                 return ''
             else:
                 jsonf = {'status': 'success',
                          'data': {'Class': Class, 'Order': Order, 'label': Animal, 'Level': Level, 'SN': SN,
-                                  'value': Profile}
+                                  'value': Profile, 'Location': Location}
                          }
                 return jsonify(jsonf)
         else:
@@ -193,6 +194,14 @@ def search_animal_byfilter():
                                               'value': Profile}
                                      }
                             return jsonify(jsonf)
+                    else:
+                        users = animaldata.query.filter_by(Animal=name).all()
+                        location = [u.Location for u in users]
+                    jsonf = {
+                        'location': location
+                    }
+                    return jsonify(jsonf)
+
     except Exception as e:
         return jsonify({'status': 'fail', 'error': str(e)})
 
