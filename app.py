@@ -103,7 +103,7 @@ def test_getlocation():
 def get_pdfname():
     try:
         name = request.args.get('name')
-        users = animaldata.query.filter(animaldata.Animal.like('%' + name + '%')).all()
+        users = animaldata.query.filter(animaldata.Animal.like(name)).all()
         pdfname = [u.Profile for u in users]
         profile = ''.join(pdfname)
         return profile
