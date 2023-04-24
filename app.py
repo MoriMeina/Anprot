@@ -410,6 +410,7 @@ def forgotpass():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 或许个人信息API
 @app.route('/trans/api/personal', methods=['POST'])
 def personal():
     data = request.get_json()
@@ -427,6 +428,7 @@ def personal():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 更新个人信息API
 @app.route('/trans/api/updatepersonal', methods=['POST'])
 def updatepersonal():
     data = request.get_json()
@@ -451,6 +453,7 @@ def updatepersonal():
         return jsonify({'status': 'fail', 'error': str(e)})
 
 
+# 上传文件API
 @app.route('/trans/api/uploadfile', methods=['POST'])
 def uploadfile():
     data = request.get_json()
